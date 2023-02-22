@@ -95,6 +95,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             StartButton.SetActive(true);
         }
+        
         // ルーム内のプレイヤーオブジェクトの配列（ローカルプレイヤーを含む）を取得する
         var players = PhotonNetwork.PlayerList;
         Debug.Log("players.Length = " + players.Length);

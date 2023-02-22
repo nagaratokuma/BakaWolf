@@ -12,6 +12,9 @@ public class QuizTimer : MonoBehaviour
     //経過時間
     private float ElapsedTime = 0;
     public RectTransform rectTransform;
+
+    private bool IsTimeOver = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,8 +25,8 @@ public class QuizTimer : MonoBehaviour
         rectTransform.sizeDelta = new Vector2(width, height);
     }
 
-    // Update is called once per frame
-    void Update()
+    //タイマーを表すバーを減らす
+    void TimerBar()
     {
         //新しいサイズ
         float NewWidth;
@@ -33,11 +36,21 @@ public class QuizTimer : MonoBehaviour
         NewWidth = width - width * (ElapsedTime/ LimitTime);
         //サイズを更新する
         rectTransform.sizeDelta = new Vector2(NewWidth, height);
+    }
 
-        //経過時間が制限時間を超えたら
-        if (ElapsedTime >= LimitTime)
+    // Update is called once per frame
+    void Update()
+    {
+        if (IsTimeOver)
         {
-            Quiz.instance.TimeOver();
+            TimerBar();
+
+            //経過時間が制限時間を超えたら
+            if (ElapsedTime >= LimitTime)
+            {
+                Quiz.instance.TimeOver();
+                IsTimeOver = false;
+            }
         }
     }
 }
