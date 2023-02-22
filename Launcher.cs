@@ -33,6 +33,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     // 選択された問題を格納する変数
     [SerializeField] public int selectedQuiz = 0;
 
+    // 最低人数を格納する変数
+    [SerializeField] public int minPlayer = 1;
+
     Hashtable RoomHastable = new ExitGames.Client.Photon.Hashtable();
 
     void Awake()
@@ -95,7 +98,7 @@ public class Launcher : MonoBehaviourPunCallbacks
         {
             StartButton.SetActive(true);
         }
-        
+
         // ルーム内のプレイヤーオブジェクトの配列（ローカルプレイヤーを含む）を取得する
         var players = PhotonNetwork.PlayerList;
         Debug.Log("players.Length = " + players.Length);
@@ -108,6 +111,39 @@ public class Launcher : MonoBehaviourPunCallbacks
         PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHastable);
 
     }
+    
+    // ルームから退室した時に呼ばれるコールバック
+    public override void OnLeftRoom()
+    {
+        Debug.Log("PUN Basics Tutorial/Launcher: OnLeftRoom() called by PUN.");
+        // ルーム内のプレイヤーオブジェクトの配列（ローカルプレイヤーを含む）を取得する
+        var players = PhotonNetwork.PlayerList;
+        Debug.Log("players.Length = " + players.Length);
+
+        //ルーム人数のカスタムプロパティを更新する
+        RoomHastable["PlayerCount"] = players.Length;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHastable);
+
+        // ルームから退室したら、スタートボタンを非表示にする
+        StartButton.SetActive(false);
+    }
+
+    // プレイヤーがゲームを終了した時に呼ばれるコールバック
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Debug.Log("PUN Basics Tutorial/Launcher: OnPlayerLeftRoom() called by PUN. Now this client is in a room.");
+
+        // ルーム内のプレイヤーオブジェクトの配列（ローカルプレイヤーを含む）を取得する
+        var players = PhotonNetwork.PlayerList;
+        Debug.Log("players.Length = " + players.Length);
+
+        // PlayerCountLabelに待機人数を表示する
+        PlayerCountLabel.GetComponent<Text>().text = "[現在の待機人数：" + players.Length + "人] 3人以上から開始可能";
+
+        //ルーム人数のカスタムプロパティを更新する
+        RoomHastable["PlayerCount"] = players.Length;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHastable);
+    }
 
     // カスタムプロパティが更新された時に呼ばれるコールバック
     public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged){
@@ -119,7 +155,7 @@ public class Launcher : MonoBehaviourPunCallbacks
             //// テスト用に一人でもプレイ可能にする////
             ////////////////////////////////////////
             // ルーム内のプレイヤーがプレイ可能人数に達しているかどうかを判定する
-            if ((int)propertiesThatChanged["PlayerCount"] >= 1)
+            if ((int)propertiesThatChanged["PlayerCount"] >= minPlayer)
             {
                 // StartButtoninteractableをtrueにする
                 StartButton.GetComponent<Button>().interactable = true;
