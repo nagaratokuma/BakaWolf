@@ -20,8 +20,6 @@ public class QuizTimer : MonoBehaviour
 
         rectTransform = gameObject.GetComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(width, height);
-
-
     }
 
     // Update is called once per frame
@@ -35,5 +33,11 @@ public class QuizTimer : MonoBehaviour
         NewWidth = width - width * (ElapsedTime/ LimitTime);
         //サイズを更新する
         rectTransform.sizeDelta = new Vector2(NewWidth, height);
+
+        //経過時間が制限時間を超えたら
+        if (ElapsedTime >= LimitTime)
+        {
+            Quiz.instance.TimeOver();
+        }
     }
 }
