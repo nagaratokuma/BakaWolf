@@ -31,12 +31,12 @@ public class Launcher : MonoBehaviourPunCallbacks
     [SerializeField] public int playerCount = 3;
 
     // 選択された問題を格納する変数
-    [SerializeField] public int selectedQuiz = 0;
+    [SerializeField] public int questionNumber = 0;
 
     // 最低人数を格納する変数
     [SerializeField] public int minPlayer = 1;
 
-    Hashtable RoomHastable = new ExitGames.Client.Photon.Hashtable();
+    private Hashtable RoomHashtable = new ExitGames.Client.Photon.Hashtable();
 
     void Awake()
     {
@@ -107,8 +107,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         PlayerCountLabel.GetComponent<Text>().text = "[現在の待機人数：" + players.Length + "人] 3人以上から開始可能";
         
         //ルーム人数のカスタムプロパティを更新する
-        RoomHastable["PlayerCount"] = players.Length;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHastable);
+        RoomHashtable["PlayerCount"] = players.Length;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHashtable);
 
     }
     
@@ -121,8 +121,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         Debug.Log("players.Length = " + players.Length);
 
         //ルーム人数のカスタムプロパティを更新する
-        RoomHastable["PlayerCount"] = players.Length;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHastable);
+        RoomHashtable["PlayerCount"] = players.Length;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHashtable);
 
         // ルームから退室したら、スタートボタンを非表示にする
         StartButton.SetActive(false);
@@ -141,8 +141,8 @@ public class Launcher : MonoBehaviourPunCallbacks
         PlayerCountLabel.GetComponent<Text>().text = "[現在の待機人数：" + players.Length + "人] 3人以上から開始可能";
 
         //ルーム人数のカスタムプロパティを更新する
-        RoomHastable["PlayerCount"] = players.Length;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHastable);
+        RoomHashtable["PlayerCount"] = players.Length;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHashtable);
     }
 
     // カスタムプロパティが更新された時に呼ばれるコールバック
@@ -160,6 +160,10 @@ public class Launcher : MonoBehaviourPunCallbacks
                 // StartButtoninteractableをtrueにする
                 StartButton.GetComponent<Button>().interactable = true;
             }
+            else
+            {
+                Debug.Log("プレイ可能人数に達していません");
+            }
         }
     }
 
@@ -176,16 +180,17 @@ public class Launcher : MonoBehaviourPunCallbacks
     public void OnValueChanged(int value)
     {
         // 選択された問題を格納する
-        selectedQuiz = value;
+        questionNumber = value;
 
-        // selectedQuizの値を確認する
-        Debug.Log("selectedQuiz = " + selectedQuiz);
+        // questionNumberの値を確認する
+        Debug.Log("questionNumber = " + questionNumber);
     }
     
-    // selectedQuizを返す関数
-    public int GetSelectedQuiz()
+    // questionNumberを返す関数
+    public int GetquestionNumber()
     {
-        return selectedQuiz;
+        return questionNumber;
     }
+
 
 }

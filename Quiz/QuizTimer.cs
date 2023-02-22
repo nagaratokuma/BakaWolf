@@ -48,8 +48,10 @@ public class QuizTimer : MonoBehaviour
             //経過時間が制限時間を超えたら
             if (ElapsedTime >= LimitTime)
             {
-                Quiz.instance.TimeOver();
-                IsTimeOver = false;
+                if (Quiz.instance.isSent == false)
+                {
+                    Quiz.instance.SendPlayerAnswer(false);
+                }
             }
         }
     }
