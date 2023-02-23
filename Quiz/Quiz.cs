@@ -71,6 +71,14 @@ public class Quiz : MonoBehaviourPunCallbacks {
 
     // 問題文を表示する関数
     public void ShowQuestion(){
+        // ルームのカスタムプロパティから問題番号を取得
+        // ルームのカスタムプロパティにQDがない場合は0を代入
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("QD") == false) {
+            questionNumber = 0;
+        } else {
+            questionNumber = (int)PhotonNetwork.CurrentRoom.CustomProperties["QD"];
+        }
+        Debug.Log("QD: " + questionNumber);
         // 問題文を表示
         questionText.text = csvDatas [questionNumber] [1];
     }

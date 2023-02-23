@@ -22,6 +22,9 @@ public class Launcher : MonoBehaviourPunCallbacks
     [Tooltip("The UI Button to Enter the Room")]
     [SerializeField] private GameObject EnterButton;
 
+    [Tooltip("The UI Dropdown to Select the Number of Question")]
+    [SerializeField] private GameObject QuizDropdown;
+
     /*
     // 待機状態を表す定数
     [SerializeField] private bool IsWaiting = false;
@@ -49,13 +52,15 @@ public class Launcher : MonoBehaviourPunCallbacks
         ControlPanel.SetActive(true);
         PlayerCountLabel.SetActive(false);
         StartButton.SetActive(false);
+        QuizDropdown.SetActive(false);
         //EnterButtoninteractableをfalseにする
         EnterButton.GetComponent<Button>().interactable = false;
         // PhotonServerSettingsの設定内容を使ってマスターサーバーへ接続する
         PhotonNetwork.ConnectUsingSettings();
+
     }
 
-    // ルーム入室ボタンが押されたときに呼ばれる
+    // ルーム入室/作成ボタンが押されたときに呼ばれる
     public void Connect()
     {
         ControlPanel.SetActive(false);
@@ -181,6 +186,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         // 選択された問題を格納する
         questionNumber = value;
+
+        // 選択された問題の番号をルームのカスタムプロパティに格納する
+        RoomHashtable["QD"] = questionNumber;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(RoomHashtable);
 
         // questionNumberの値を確認する
         Debug.Log("questionNumber = " + questionNumber);
