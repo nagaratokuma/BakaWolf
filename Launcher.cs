@@ -98,9 +98,10 @@ public class Launcher : MonoBehaviourPunCallbacks
     {
         Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
 
-        // マスタクライアントだけがスタートボタンを押せるようにする
+        // マスタクライアントだけがドロップボタンとスタートボタンを押せるようにする
         if (PhotonNetwork.IsMasterClient)
         {
+            QuizDropdown.SetActive(true);
             StartButton.SetActive(true);
         }
 
